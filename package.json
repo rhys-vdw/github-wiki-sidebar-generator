@@ -1,0 +1,11 @@
+{
+  "name": "github-wiki-sidebar-generator",
+  "version": "0.0.1",
+  "description": "Generates GitHub wiki sidebar from file structure",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
