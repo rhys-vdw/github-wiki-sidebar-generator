@@ -1,6 +1,6 @@
 {
   "name": "github-wiki-sidebar-generator",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Generates GitHub wiki sidebar from file structure",
   "main": "index.js",
   "repository": {
