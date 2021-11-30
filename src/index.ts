@@ -1,7 +1,6 @@
 import fs from "fs";
 import path from "path";
 
-const root = process.argv.length > 2 ? process.argv[2] : process.cwd();
 const tab = "  ";
 
 function addDirectoryItems(doc: string, dirPath: string, indent: string) {
@@ -23,7 +22,12 @@ function addDirectoryItems(doc: string, dirPath: string, indent: string) {
   }, doc);
 }
 
-const result = addDirectoryItems("", root, "");
-const outPath = path.join(root, "_Sidebar.md");
-fs.writeFileSync(outPath, result);
-console.log(`Created ${outPath}`);
+export function generate(root: string) {
+  return addDirectoryItems("", root, "");
+}
+
+export function write(root: string) {
+  const outPath = path.join(root, "_Sidebar.md");
+  fs.writeFileSync(outPath, generate(root));
+  console.log(`Created ${outPath}`);
+}
