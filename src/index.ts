@@ -26,8 +26,6 @@ function addDirectoryItems(
           const name = filename.slice(0, filename.length - ".md".length);
           acc += `${indent}- [[${name}|${name}]]\n`;
         }
-      } else {
-        console.log("skipping " + absPath);
       }
     }
     return acc;
