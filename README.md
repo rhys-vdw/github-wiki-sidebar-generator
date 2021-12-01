@@ -1,6 +1,6 @@
 # github-wiki-sidebar-generator
 
-Run in root of wiki project to generate bullet sidebar with nesting based on folder structure. Creates `_Sidebar.md` which is expcted by GitHub wiki.
+Run in root of wiki project to generate bullet sidebar with nesting based on folder structure. Creates `_Sidebar.md` which is expected by GitHub wiki.
 
 Run `github-wiki-sidebar-generator -h` for help.
 
