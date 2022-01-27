@@ -1,0 +1,30 @@
+name: NPM Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      updateType:
+        description: "Update type ('patch', 'major', or 'minor')"
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - name: Use Node.js 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - run: npm ci
+      - run: npm run build
+      - run: git config --global user.name "CI"
+      - run: git config --global user.email "<>"
+      - run: npm version ${{ github.event.inputs.updateType }} -m "%s"
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: git push --follow-tags
+        env:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
