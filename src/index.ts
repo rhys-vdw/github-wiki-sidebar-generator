@@ -11,7 +11,9 @@ function addDirectoryItems(
   indent: string,
   filter: (path: string) => boolean
 ): string {
-  const files = fs.readdirSync(dirPath);
+  const files = fs
+    .readdirSync(dirPath)
+    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
 
   return files.reduce((acc, filename) => {
     if (!(filename.startsWith(".") || filename.startsWith("_"))) {
