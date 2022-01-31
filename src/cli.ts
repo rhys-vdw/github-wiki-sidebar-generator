@@ -1,8 +1,19 @@
 #!/usr/bin/env node
 
+import { existsSync, readFileSync } from "fs";
+import path from "path";
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import { write } from "./index";
+
+interface Config {
+  title?: string,
+}
+
+const configPath = path.join(process.cwd(), "wiki.config.json")
+const config = (existsSync(configPath)
+  ? JSON.parse(readFileSync(configPath, { encoding: "utf8" }))
+  : {}) as Config
 
 const { argv } = yargs(hideBin(process.argv))
   .command(
@@ -18,7 +29,8 @@ const { argv } = yargs(hideBin(process.argv))
     title: {
       alias: "t",
       describe: "Title of Home page",
-      demandOption: true
+      default: config.title,
+      demandOption: config.title === undefined
     }
   })
   .help()
