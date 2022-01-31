@@ -29,8 +29,7 @@ const { argv } = yargs(hideBin(process.argv))
     title: {
       alias: "t",
       describe: "Title of Home page",
-      default: config.title,
-      demandOption: config.title === undefined
+      default: config.title ?? "Index"
     }
   })
   .help()
