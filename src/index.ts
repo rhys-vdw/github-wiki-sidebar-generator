@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs, { Stats } from "fs";
 import path from "path";
 const ignore = require("ignore-file") as any;
 
@@ -53,14 +53,26 @@ function addDirectoryItems(
 ): string {
   const files = fs
     .readdirSync(dirPath)
-    .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }));
-
-  return files.reduce((acc, filename) => {
-    if (!(filename.startsWith(".") || filename.startsWith("_"))) {
+    .map(filename => {
       const absPath = path.join(dirPath, filename);
+      return [
+        filename,
+        absPath,
+        fs.lstatSync(absPath)
+      ] as [string, string, Stats]
+    })
+    .sort(([aFile, , aStats], [bFile, , bStats]) => {
+      // Sort directories first.
+      if (aStats.isDirectory() !== bStats.isDirectory()) {
+        return aStats.isDirectory() ? 1 : -1;
+      }
+      return aFile.localeCompare(bFile, undefined, { sensitivity: "base" })
+    });
+
+  return files.reduce((acc, [filename, absPath, stats]) => {
+    if (!(filename.startsWith(".") || filename.startsWith("_"))) {
       const relPath = path.relative(rootPath, absPath);
       if (!filter(relPath)) {
-        const stats = fs.lstatSync(absPath);
         if (stats.isDirectory()) {
           acc += formatter.directory(depth, filename);
           acc = addDirectoryItems(acc, rootPath, absPath, depth + 1, filter, formatter);
@@ -84,14 +96,17 @@ export function generateHome(root: string, title: string, filter: Filter) {
 
 export function writeSidebar(root: string, filter: Filter): void {
   const outPath = path.join(root, "_Sidebar.md");
-  fs.writeFileSync(outPath, generateSidebar(root, filter));
-  console.log(`Created ${outPath}`);
+  writeFile(outPath, generateSidebar(root, filter));
 }
 
 export function writeHome(root: string, title: string, filter: Filter): void {
   const outPath = path.join(root, "Home.md");
-  fs.writeFileSync(outPath, generateHome(root, title, filter));
-  console.log(`Created ${outPath}`);
+  writeFile(outPath, generateHome(root, title, filter));
+}
+
+function writeFile(path: string, content: string) {
+  fs.writeFileSync(path, content);
+  console.log(`Created ${path}`);
 }
 
 export function write(root: string, title: string) {
