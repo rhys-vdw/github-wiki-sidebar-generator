@@ -14,7 +14,14 @@ const { argv } = yargs(hideBin(process.argv))
         default: process.cwd(),
       })
   )
+  .options({
+    title: {
+      alias: "t",
+      describe: "Title of Home page",
+      demandOption: true
+    }
+  })
   .help()
   .alias("help", "h");
 
-write((argv as any).path);
+write((argv as any).path, (argv as any).title);
