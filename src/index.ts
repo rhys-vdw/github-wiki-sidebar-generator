@@ -4,6 +4,13 @@ const ignore = require("ignore-file") as any;
 
 const tab = "  ";
 
+function formatListItem(depth: number, name: string, link?: string): string {
+  const indent = tab.repeat(depth);
+  return link !== undefined
+    ? `${indent}- [[${name}|${link}]]\n`
+    : `${indent}- ${name}\n`;
+}
+
 function addDirectoryItems(
   doc: string,
   rootPath: string,
@@ -22,11 +29,11 @@ function addDirectoryItems(
       if (!filter(relPath)) {
         const stats = fs.lstatSync(absPath);
         if (stats.isDirectory()) {
-          acc += `${tab.repeat(depth)}- ${filename}\n`;
+          acc += formatListItem(depth, filename);
           acc = addDirectoryItems(acc, rootPath, absPath, depth + 1, filter);
         } else if (filename.endsWith(".md") && stats.isFile()) {
           const name = filename.slice(0, filename.length - ".md".length);
-          acc += `${tab.repeat(depth)}- [[${name}|${name}]]\n`;
+          acc += formatListItem(depth, name, name);
         }
       }
     }
