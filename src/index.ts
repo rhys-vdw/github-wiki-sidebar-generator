@@ -8,7 +8,7 @@ function addDirectoryItems(
   doc: string,
   rootPath: string,
   dirPath: string,
-  indent: string,
+  depth: number,
   filter: (path: string) => boolean
 ): string {
   const files = fs
@@ -22,11 +22,11 @@ function addDirectoryItems(
       if (!filter(relPath)) {
         const stats = fs.lstatSync(absPath);
         if (stats.isDirectory()) {
-          acc += `${indent}- ${filename}\n`;
-          acc = addDirectoryItems(acc, rootPath, absPath, indent + tab, filter);
+          acc += `${tab.repeat(depth)}- ${filename}\n`;
+          acc = addDirectoryItems(acc, rootPath, absPath, depth + 1, filter);
         } else if (filename.endsWith(".md") && stats.isFile()) {
           const name = filename.slice(0, filename.length - ".md".length);
-          acc += `${indent}- [[${name}|${name}]]\n`;
+          acc += `${tab.repeat(depth)}- [[${name}|${name}]]\n`;
         }
       }
     }
@@ -36,7 +36,7 @@ function addDirectoryItems(
 
 export function generate(root: string): string {
   const filter = ignore.sync(".wikiignore") || ignore.compile("");
-  return addDirectoryItems("", root, root, "", filter);
+  return addDirectoryItems("", root, root, 0, filter);
 }
 
 export function write(root: string): void {
