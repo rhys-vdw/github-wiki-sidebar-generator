@@ -72,6 +72,7 @@ function addDirectoryItems(
   return files.reduce((acc, [filename, absPath, stats]) => {
     if (!(filename.startsWith(".") || filename.startsWith("_"))) {
       const relPath = path.relative(rootPath, absPath);
+      if (relPath == "Home.md") return acc;
       if (!filter(relPath)) {
         if (stats.isDirectory()) {
           acc += formatter.directory(depth, filename);
